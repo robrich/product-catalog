@@ -11,6 +11,8 @@ We're coding this app live on the [MemSQL Developer Live Stream](https://www.cro
 Setup
 -----
 
+### Setup Database
+
 1. Sign up for a free license to [MemSQL](https://www.memsql.com/download) (up to 4 nodes and 128 gigs ram).
 
 2. Install and configure a Docker runtime.  For local development, install [Docker Desktop](https://www.memsql.com/blog/spin-up-a-memsql-cluster-on-docker-desktop-in-10-minutes/) and add additional memory to the Docker Desktop VM.
@@ -19,9 +21,18 @@ Setup
 
 4. `docker-compose up` starts the database.
 
-5. `npm install` to get all the Node modules.
+5. Get to MemSQL Tools, the browser-based query and administration tool at http://localhost:8080/  For the cluster-in-a-box container, username is `root` and password is blank. 
 
-6. Create a file named `.env` in the root of the project (next to `package.json`) that looks like this:
+
+### Setup Node API
+
+The `api` folder contains the API that shims data between the front-end and the database.
+
+1. `cd api`
+
+2. `npm install` to get all the Node modules.
+
+3. Create a file named `.env` in the root of the project (next to `package.json`) that looks like this:
 
    ```json
    MEMSQL_HOST=localhost
@@ -32,7 +43,20 @@ Setup
 
    You may need to edit these details to match your Docker configuration.
 
-7. `npm run start` and connect to https://localhost:3000
+4. `npm run start` and connect to https://localhost:3000
+
+
+### Setup Vue SPA
+
+The `app` folder contains the Single Page Application (SPA) presented to users.
+
+1. `cd app`
+
+2. `npm install` to get all the Node modules.
+
+3. `npm run serve` loads up the application in dev mode.
+
+4. Open a browser to http://localhost:8080/
 
 
 LICENSE

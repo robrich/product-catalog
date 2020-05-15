@@ -29,4 +29,4 @@ export default async function init() {
   app.use('/api/product', productRouter);
 
   return app;
-}
+};
