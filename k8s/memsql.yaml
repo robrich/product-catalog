@@ -1,0 +1,59 @@
+# A deployment ensures pod(s) are restarted on failure
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memsql
+spec:
+  replicas: 1 # only create one pod (container)
+  selector:
+    matchLabels:
+      app: memsql
+  template:
+    # Here's the definition of the pod:
+    metadata:
+      # The service finds all pods with matching metadata
+      labels:
+        app: memsql
+    spec:
+      containers:
+      - name: memsql
+        resources:
+        # Cluster-in-a-box image is pulled from Docker Hub 
+        image: memsql/cluster-in-a-box
+        ports:
+        - containerPort: 3306 # MemSQL db
+        - containerPort: 8080 # MemSQL Studio
+        env:
+        # 'Y' means keep running after cluster init
+        - name: START_AFTER_INIT
+          value: 'Y'
+        # TODO: paste your license key from portal.memsql.com here:
+        - name: LICENSE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: memsql-license
+              key: LICENSE_KEY
+---
+# A service load-balances across and routes traffic into pods
+apiVersion: v1
+kind: Service
+metadata:
+  name: memsql
+  labels:
+    app: memsql
+spec:
+  type: NodePort
+  # Find all pods
+  selector:
+    app: memsql
+  ports:
+  # MemSQL db port:
+  - name: '3306'
+    nodePort: 30306
+    port: 3306
+    targetPort: 3306
+  # MemSQL Studio port:
+  - name: '8080'
+    nodePort: 30080
+    port: 8080
+    targetPort: 8080

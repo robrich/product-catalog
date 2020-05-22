@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: memsql-license
+type: Opaque
+stringData:
+  LICENSE_KEY: PASTE_LICENSE_KEY_HERE
