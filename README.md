@@ -54,9 +54,9 @@ The `app` folder contains the Single Page Application (SPA) presented to users.
 
 2. `npm install` to get all the Node modules.
 
-3. `npm run serve` loads up the application in dev mode.
+3. `npm run serve` loads up the application in dev mode on port 4000 because port 8080 is taken by MemSQL Tools.
 
-4. Open a browser to http://localhost:8080/
+4. Open a browser to http://localhost:4000/
 
 
 Build and Run on Kubernetes

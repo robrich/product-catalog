@@ -46,13 +46,6 @@
         <span class="mr-2">Product List</span>
       </v-btn>
 
-      <v-btn
-        to="/product/1"
-        text
-      >
-        <span class="mr-2">Product 1</span>
-      </v-btn>
-
       <v-spacer></v-spacer>
 
       <v-btn

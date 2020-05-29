@@ -5,6 +5,7 @@ import { config as envConfig } from 'dotenv';
 import { createConnection } from 'mysql2/promise';
 
 import productRouter from './routes/product';
+import productsRouter from './routes/products';
 import indexRouter from './routes/index';
 
 export default async function init() {
@@ -27,6 +28,7 @@ export default async function init() {
 
   app.use('/', indexRouter);
   app.use('/api/product', productRouter);
+  app.use('/api/products', productsRouter);
 
   return app;
 };
