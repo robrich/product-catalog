@@ -5,7 +5,7 @@ import { makeMockResponse } from '../mocks/mock-response';
 import { makeMockDb } from '../mocks/mock-db';
 
 describe('routes/product', () => {
-  
+
   it('should return product when found in database', async () => {
 
     // arrange

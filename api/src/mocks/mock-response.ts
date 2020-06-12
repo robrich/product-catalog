@@ -17,7 +17,7 @@ export function makeMockResponse<TResult>(): MockResponse<TResult> {
     res.state.status = status;
     return res;
   };
-  
+
   res.json = (json: TResult) => {
     res.state.json = json;
     return res;

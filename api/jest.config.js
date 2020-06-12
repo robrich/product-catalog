@@ -3,4 +3,6 @@ module.exports = {
   testEnvironment: 'node',
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   //testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(ts)$'
+  collectCoverage: true,
+  collectCoverageFrom: ['src/**/*.ts']
 };
