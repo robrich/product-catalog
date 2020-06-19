@@ -12,7 +12,8 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "vuetify"
+      "vuetify",
+      "jest"
     ],
     "typeRoots": [
       "./node_modules/@types",

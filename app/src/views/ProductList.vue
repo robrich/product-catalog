@@ -1,8 +1,11 @@
 <template>
   <div>
     <h1>Product list</h1>
-    <product-list :products="products" v-if="products.length" />
-    <error v-if="errored" :status="status" />
+    <Loading v-if="loading" />
+    <div v-else>
+      <product-list :products="products" v-if="products.length" />
+      <error v-if="errored" :status="status" />
+    </div>
   </div>
 </template>
 
@@ -11,9 +14,11 @@ import Vue from 'vue';
 import fetcher, { Response } from '../services/fetcher';
 import { Product } from '../types/product';
 import Error from '@/components/Error.vue';
+import Loading from '@/components/Loading.vue';
 import ProductList from '@/components/ProductList.vue';
 
 interface ProductListModel {
+  loading: boolean;
   page: number;
   errored: boolean;
   status: number;
@@ -23,12 +28,14 @@ interface ProductListModel {
 export default Vue.extend({
 
   components: {
+    Loading,
     Error,
     ProductList
   },
 
   data() {
     return {
+      loading: true,
       page: 0,
       status: 0,
       errored: false,
@@ -37,6 +44,7 @@ export default Vue.extend({
   },
 
   async mounted() {
+    this.loading = true;
     this.page = parseInt(this.$route.params.page, 10);
     if (this.page < 0 || isNaN(this.page)) {
       this.page = 0;
@@ -50,6 +58,7 @@ export default Vue.extend({
       this.products = [];
     }
     this.errored = (result.status >= 500);
+    this.loading = false;
 
   }
 
