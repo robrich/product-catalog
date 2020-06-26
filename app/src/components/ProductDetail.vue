@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container data-cy="c-product-detail">
     
     <v-card outlined>
       <v-card-title>

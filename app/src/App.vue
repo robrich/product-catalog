@@ -28,6 +28,7 @@
       <v-btn
         to="/"
         text
+        data-cy="nav-home"
       >
         <span class="mr-2">Home</span>
       </v-btn>
@@ -35,6 +36,7 @@
       <v-btn
         to="/about"
         text
+        data-cy="nav-about"
       >
         <span class="mr-2">About</span>
       </v-btn>
@@ -42,6 +44,7 @@
       <v-btn
         to="/products"
         text
+        data-cy="nav-product-list"
       >
         <span class="mr-2">Product List</span>
       </v-btn>

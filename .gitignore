@@ -9,6 +9,9 @@ package-lock.json
 .env.*.local
 .env
 
+# cypress videos
+videos
+
 # Log files
 npm-debug.log*
 yarn-debug.log*

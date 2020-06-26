@@ -1,11 +1,12 @@
 <template>
-  <v-container>
+  <v-container data-cy="c-product-list">
     
     <v-card
       v-for="product in products"
       :key="product.id"
       class="mx-auto"
       max-width="400"
+      data-cy="product-detail-card"
     >
       <v-img
         class="white--text align-end"
@@ -20,6 +21,7 @@
           color="#AA00FF"
           text
           :to="`/product/${product.productCode}`"
+          data-cy="product-link"
         >
           Explore
         </v-btn>

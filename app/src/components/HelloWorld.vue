@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container data-cy="c-hello-world">
     <v-row class="text-center">
       <v-col cols="12">
         <v-img

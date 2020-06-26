@@ -2,6 +2,7 @@
   <v-card
     class="mx-auto loading"
     max-width="400"
+    data-cy="c-loading"
   >
     <v-card-title>
       <v-icon

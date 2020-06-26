@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div data-cy="c-error">
     <h1>{{status}}: Error</h1>
     <p>The system has failed. Try your request again or contact support.</p>
   </div>
