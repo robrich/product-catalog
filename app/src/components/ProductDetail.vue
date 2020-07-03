@@ -7,8 +7,8 @@
       </v-card-title>
       <v-card-text>
         <p>{{product.description}}</p>
-        <ul class="feature-list">
-          <li v-for="[key, value] of Object.entries(product.properties)" :key="key"
+        <ul class="feature-list" v-show="product.properties">
+          <li v-for="[key, value] of Object.entries(product.properties || {})" :key="key"
             class="feature">
             {{key}}: {{value}}
           </li>
@@ -59,5 +59,6 @@ export default Vue.extend({
 .image {
   margin: 20px auto;
   display: block;
+  max-width: 100%;
 }
 </style>

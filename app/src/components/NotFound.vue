@@ -4,3 +4,10 @@
     <p>The page you're looking for is not found.</p>
   </div>
 </template>
+
+<script type="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+});
+</script>
