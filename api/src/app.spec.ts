@@ -59,4 +59,49 @@ describe('app:e2e', () => {
 
   }, 5000); // wait longer
 
+  it('should not show login info when not logged in', async () => {
+
+    // arrange
+    const req = supertest(server);
+
+    // act
+    let res = await req.get(`/api/auth/`);
+
+    // assert
+    expect(res.status).toEqual(401);
+
+  }, 5000); // wait longer
+
+  it('should login and get user info', async () => {
+
+    // test 1: login
+
+    // arrange
+    const req = supertest(server);
+    const email = 'some@user.com';
+    const password = 'somepassword';
+
+    // act
+    let res = await req.post(`/api/auth/`)
+      .send({email, password});
+
+    // assert
+    expect(res.status).toEqual(200);
+    expect(res.body.token).toBeTruthy();
+
+    // test 2: use the token to get current user
+
+    // arange
+    const token = res.body.token;
+
+    // act
+    res = await req.get(`/api/auth/`)
+      .set('Authorization', 'Bearer '+token);
+
+    // assert
+    expect(res.status).toEqual(200);
+    expect(res.body.email).toEqual(email);
+
+  }, 5000); // wait longer
+
 });

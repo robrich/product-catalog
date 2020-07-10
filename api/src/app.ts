@@ -7,9 +7,13 @@ import { createConnection } from 'mysql2/promise';
 import productRouter from './routes/product';
 import productsRouter from './routes/products';
 import indexRouter from './routes/index';
+import authRouter from './routes/auth';
+import passportInit from './services/passport';
 
 export default async function init() {
   envConfig();
+
+  passportInit();
 
   const db = await createConnection({
     host: process.env.MEMSQL_HOST,
@@ -27,6 +31,7 @@ export default async function init() {
   app.use(express.static(join(__dirname, '../public')));
 
   app.use('/', indexRouter);
+  app.use('/api/auth', authRouter);
   app.use('/api/product', productRouter);
   app.use('/api/products', productsRouter);
 
