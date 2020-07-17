@@ -2,7 +2,7 @@ import express from 'express';
 import logger from 'morgan';
 import { join } from 'path';
 import { config as envConfig } from 'dotenv';
-import { createConnection } from 'mysql2/promise';
+import { createConnection, Connection } from 'mysql2/promise';
 
 import productRouter from './routes/product';
 import productsRouter from './routes/products';
@@ -15,7 +15,7 @@ export default async function init() {
 
   passportInit();
 
-  const db = await createConnection({
+  const db: Connection = await createConnection({
     host: process.env.MEMSQL_HOST,
     user: process.env.MEMSQL_USERNAME,
     password: process.env.MEMSQL_PASSWORD,

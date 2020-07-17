@@ -14,11 +14,11 @@ export default function init() {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: secret
     //issuer: 'my.site.com',
-    //audience: 'my.site.com
+    //audience: 'my.site.com'
   };
 
   passport.use(new Strategy(jwtOpts, callbackify(verifyJwt)));
-  
+
 }
 
 export async function verifyJwt(jwtPayload: JwtPayload | undefined) {

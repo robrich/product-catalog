@@ -19,10 +19,11 @@ export async function getCurrentUser(req: Request, res: Response) {
   }
 }
 
+// not for public consumption, exported for testing
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({message: 'Invalid email / password'});
+    return res.status(401).json({message: 'Invalid email / password'});
   }
 
   // TODO: use database
@@ -31,6 +32,9 @@ export async function login(req: Request, res: Response) {
     id: 1,
     email
   };
+  if (!user) {
+    return res.status(401).json({message: 'Invalid email / password'});
+  }
 
   const secret = process.env.JWT_SECRET;
   if (!secret) {

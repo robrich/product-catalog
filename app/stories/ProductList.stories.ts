@@ -14,7 +14,7 @@ const defaultProducts: Product[] = [
     productCode: 'prod-1',
     name: 'Product 1',
     active: true,
-    desription: 'The default product description',
+    description: 'The default product description',
     properties: {
       has: 'many',
       pro: 'perties'
@@ -25,7 +25,7 @@ const defaultProducts: Product[] = [
     productCode: 'prod-2',
     name: 'Product 2',
     active: true,
-    desription: 'The default product description',
+    description: 'The default product description',
     properties: {
       has: 'many',
       pro: 'perties'

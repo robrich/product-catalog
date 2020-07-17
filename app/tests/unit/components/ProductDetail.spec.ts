@@ -13,7 +13,7 @@ describe('components/ProductDetail.vue', () => {
       // satisfy interface, not related to test:
       id: 1,
       active: true,
-      desription: 'test',
+      description: 'test',
       productCode: 'test-code',
       properties: {any:'values'}
     };

@@ -30,7 +30,7 @@
   </v-container>
 </template>
 
-<script type="ts">
+<script lang="ts">
 import Vue from 'vue';
 //import { Product } from '../types/product';
 

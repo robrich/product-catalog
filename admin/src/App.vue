@@ -24,19 +24,35 @@
           width="100"
         />
       </div>
+      
+      <v-btn
+        v-if="isAuthenticated"
+        to="/products"
+        text
+      >
+        Product List
+      </v-btn>
+
+      <v-btn
+        v-if="isAuthenticated"
+        to="/about"
+        text
+      >
+        About
+      </v-btn>
 
       <v-spacer></v-spacer>
 
       <v-btn
         v-if="isAuthenticated"
-        href="/logout"
+        to="/logout"
         text
       >
         Logout
       </v-btn>
       <v-btn
         v-if="!isAuthenticated"
-        href="/"
+        to="/"
         text
       >
         Login

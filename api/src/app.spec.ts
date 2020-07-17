@@ -65,7 +65,7 @@ describe('app:e2e', () => {
     const req = supertest(server);
 
     // act
-    let res = await req.get(`/api/auth/`);
+    const res = await req.get(`/api/auth/`);
 
     // assert
     expect(res.status).toEqual(401);

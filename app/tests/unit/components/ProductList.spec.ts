@@ -15,7 +15,7 @@ describe('components/ProductList.vue', () => {
         // satisfy interface, not related to test:
         id: 1,
         active: true,
-        desription: 'test',
+        description: 'test',
         productCode: 'test-code-1',
         properties: {any:'values'}
       },
@@ -24,7 +24,7 @@ describe('components/ProductList.vue', () => {
         // satisfy interface, not related to test:
         id: 2,
         active: true,
-        desription: 'test',
+        description: 'test',
         productCode: 'test-code-2',
         properties: {any:'values'}
       }

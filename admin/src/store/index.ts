@@ -11,18 +11,9 @@ const defaultState: VuexData = {
 
 export default new Vuex.Store({
   state: defaultState,
-  mutations: {
-    jwt: (state, jwt: string | undefined) => {
-      state.jwt = jwt;
-    },
-    email: (state, email: string | undefined) => {
-      state.email = email;
-    }
-  },
   actions: {
 
     login(context: ActionContext<VuexData, VuexData>, args: LoginData) {
-      debugger;
       const { jwt, email } = args;
       if (jwt) {
         context.commit('jwt', jwt);
@@ -36,6 +27,17 @@ export default new Vuex.Store({
     logout(context: ActionContext<VuexData, VuexData>) {
       context.commit('jwt', undefined);
       context.commit('email', undefined);
+    }
+
+  },
+  mutations: {
+
+    jwt: (state: StoreData, jwt: string | undefined) => {
+      state.jwt = jwt;
+    },
+
+    email: (state: StoreData, email: string | undefined) => {
+      state.email = email;
     }
 
   },

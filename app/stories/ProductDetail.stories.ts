@@ -13,7 +13,7 @@ const defaultProduct: Product = {
   productCode: 'default',
   name: 'Default Product',
   active: true,
-  desription: 'The default product description',
+  description: 'The default product description',
   properties: {
     has: 'many',
     pro: 'perties'
@@ -46,7 +46,7 @@ export const configured = () => ({
     active: {
       default: boolean('active', true)
     },
-    desription: {
+    description: {
       default: text('description', 'The default product description')
     },
     properties: {
@@ -71,7 +71,7 @@ export const oneProperty = () => ({
     active: {
       default: boolean('active', true)
     },
-    desription: {
+    description: {
       default: text('description', 'The default product description')
     },
     properties: {
@@ -96,7 +96,7 @@ export const twoProperties = () => ({
     active: {
       default: boolean('active', true)
     },
-    desription: {
+    description: {
       default: text('description', 'The default product description')
     },
     properties: {
@@ -121,7 +121,7 @@ export const noProperties = () => ({
     active: {
       default: boolean('active', true)
     },
-    desription: {
+    description: {
       default: text('description', 'The default product description')
     },
     properties: {

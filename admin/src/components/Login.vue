@@ -31,10 +31,12 @@
           <v-btn
             :disabled="!valid && !loading"
             block
+            type="submit"
           >
-            Submit
+            Login
           </v-btn>
         </v-form>
+
         <v-alert v-if="loginFail" type="error">
           Invalid email / password
         </v-alert>
@@ -59,6 +61,7 @@ export type User = {
 }
 
 export default Vue.extend({
+
   data: () => ({
     loginFail: false,
     loading: false,
@@ -81,11 +84,11 @@ export default Vue.extend({
     form() {
       return this.$refs.form as HTMLFormElement;
     }
+
   },
 
   methods: {
     async submit() {
-      debugger;
       this.form.validate();
       if (!this.valid) {
         return;
@@ -100,15 +103,16 @@ export default Vue.extend({
       });
       this.loading = false;
 
-      if (!res.ok || !res.data) {
+      if (!res.ok || !res.data?.token) {
         this.loginFail = true;
         return;
       }
 
-      const token = res.data.token;
+      const jwt = res.data.token;
 
-      store.dispatch('login', {email, token});
-      this.$router.push('/about');
+      await store.dispatch('login', {email, jwt});
+      await Vue.nextTick();
+      this.$router.push('/products');
 
     }
 

@@ -4,7 +4,7 @@ import Home from '../views/Home.vue';
 
 Vue.use(VueRouter);
 
-  const routes: Array<RouteConfig> = [
+const routes: RouteConfig[] = [
   {
     path: '/',
     name: 'Home',
@@ -21,17 +21,11 @@ Vue.use(VueRouter);
   {
     path: '/products',
     name: 'ProductList',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "products" */ '../views/ProductList.vue')
   },
   {
     path: '/product/:id',
     name: 'ProductDetail',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "product" */ '../views/ProductDetail.vue')
   }
 ];

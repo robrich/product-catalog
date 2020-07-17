@@ -19,6 +19,12 @@ export async function getProductsByPage(req: Request, res: Response) {
 
   const [rows/*, fields*/] = await db.query<RowDataPacket[]>('SELECT id, productCode, name, active FROM catalog WHERE active = ? or active = true limit ? offset ?', [active, PAGE_SIZE, (PAGE_SIZE * pageNum)]);
 
+  if (rows) {
+    rows.forEach(r => {
+      r.active = !!r.active;
+    });
+  }
+
   res.json(rows || []);
 }
 
