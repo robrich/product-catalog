@@ -1,5 +1,5 @@
-import { getProductByProductCode } from './product'; // suite under test
-import { Product } from '../types/product';
+import { getProductByProductCode } from '../../../src/routes/product'; // suite under test
+import { Product } from '../../../src/types/product';
 import { makeMockRequest } from '../mocks/mock-request';
 import { makeMockResponse } from '../mocks/mock-response';
 import { makeMockDb } from '../mocks/mock-db';
@@ -45,7 +45,7 @@ describe('routes/product', () => {
     // assert
     expect(res.state.status).toBe(404);
     expect(res.state.json).toBe(product);
-
+    expect(db.state.values?.[0]).toBe(productCode);
   });
 
   it('should return 404 when no productCode passed', async () => {
@@ -64,7 +64,7 @@ describe('routes/product', () => {
     // assert
     expect(res.state.status).toBe(404);
     expect(res.state.json).toBe(product);
-    expect(db.state.sql).toBe(undefined);
+    expect(db.state.values).toBe(undefined);
 
   });
 

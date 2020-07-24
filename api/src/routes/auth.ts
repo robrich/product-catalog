@@ -1,6 +1,5 @@
 import expressRouter from 'express-promise-router';
 import { Request, Response } from 'express';
-import { Connection, RowDataPacket } from 'mysql2/promise';
 import jwt from 'jsonwebtoken';
 import { authenticate } from 'passport';
 

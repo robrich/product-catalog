@@ -4,5 +4,6 @@ module.exports = {
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   //testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(ts)$',
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.ts']
+  collectCoverageFrom: ['src/**/*.ts'],
+  setupFilesAfterEnv: ['./jest.setup.js']
 };

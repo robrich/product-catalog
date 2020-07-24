@@ -1,5 +1,5 @@
-import { getProductsByPage, PAGE_SIZE } from './products'; // suite under test
-import { Product } from '../types/product';
+import { getProductsByPage, PAGE_SIZE } from '../../../src/routes/products'; // suite under test
+import { Product } from '../../../src/types/product';
 import { makeMockRequest } from '../mocks/mock-request';
 import { makeMockResponse } from '../mocks/mock-response';
 import { makeMockDb } from '../mocks/mock-db';

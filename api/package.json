@@ -35,10 +35,12 @@
     "@types/passport": "^1.0.4",
     "@types/passport-jwt": "^3.0.3",
     "@types/supertest": "^2.0.9",
+    "@types/uuid": "^8.0.0",
     "jest": "^26.0.1",
     "supertest": "^4.0.2",
     "ts-jest": "^26.1.0",
     "tslint": "^6.1.2",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "uuid": "^8.2.0"
   }
 }

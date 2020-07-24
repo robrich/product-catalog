@@ -22,6 +22,8 @@ export default function init() {
 }
 
 export async function verifyJwt(jwtPayload: JwtPayload | undefined) {
+  await Promise.resolve();
+
   if (!jwtPayload) {
     return null;
   }
