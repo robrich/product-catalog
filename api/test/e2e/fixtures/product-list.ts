@@ -6,7 +6,7 @@ import { Product } from '../../../src/types/product';
 
 
 // TODO: consider making a db call instead of firing up the whole app
-export default async function getProductList(): Promise<Product[]> {
+export default async function getFirstPageOfProducts(): Promise<Product[]> {
 
   const app: Express = await appInit();
 
@@ -16,11 +16,14 @@ export default async function getProductList(): Promise<Product[]> {
     const url = '/api/products/0';
     const res = await req.get(url);
     if(res.status !== 200) {
-      const err = new Error(`failed to get ${url}: status ${res.status}`)
+      throw new Error(`failed to get ${url}: status ${res.status}`);
     }
     const products = res.body as Product[] | undefined;
+    if (!products || !products.length) {
+      throw new Error(`failed to get products from ${url}`);
+    }
 
-    return products || [];
+    return products;
 
   } finally {
     const db = app?.locals?.db;

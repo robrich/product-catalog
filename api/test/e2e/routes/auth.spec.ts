@@ -29,7 +29,11 @@ describe('routes/auth:e2e', () => {
     {status: 404, method: 'get', url: `/api/product/not-found-${guid()}`},
     {status: 401, method: 'post', url: '/api/product'},
     {status: 401, method: 'put', url: '/api/product/-1'},
-    {status: 401, method: 'delete', url: '/api/product/-1'}
+    {status: 401, method: 'delete', url: '/api/product/-1'},
+    {status: 401, method: 'get', url: `/api/properties/not-found-${guid()}`},
+    {status: 401, method: 'post', url: `/api/properties/not-found-${guid()}`},
+    {status: 401, method: 'put', url: `/api/properties/not-found-${guid()}`},
+    {status: 401, method: 'delete', url: `/api/properties/not-found-${guid()}/prop-${guid()}`},
   ].forEach(({status, method, url}: {status: number, method: string, url: string}) => {
     it(`should get ${status} when ${method} to ${url}`, async () => {
 

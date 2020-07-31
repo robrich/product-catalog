@@ -45,6 +45,7 @@ describe('routes/product:e2e', () => {
     const product = res.body as Product | undefined;
 
     expect(product?.productCode).toEqual(productCode);
+    expect(product?.id).toBeGreaterThan(0);
 
   });
 
@@ -71,6 +72,9 @@ describe('routes/product:e2e', () => {
     // assert
     expect(res.status).toEqual(201);
     expected.id = res.body?.id;
+    expect(expected.id).toBeGreaterThan(0);
+
+    // stash it for later
     products.push(expected);
 
     // go get it and ensure it exists
@@ -96,6 +100,7 @@ describe('routes/product:e2e', () => {
     expected.properties = {
       mod: 'ified'
     };
+    expected.description = 'the product description is changed in this unit test'
     const req = supertest(server);
 
     // act
@@ -109,6 +114,7 @@ describe('routes/product:e2e', () => {
     // go get it and ensure it changed
     res = await req.get(`/api/product/${productCode}`);
     expect(res.status).toEqual(200);
+    expect(res.body).toBeTruthy();
     const actual = res.body as Product;
 
     expect(actual).toEqual(expected);

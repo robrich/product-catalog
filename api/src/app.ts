@@ -4,8 +4,9 @@ import { join } from 'path';
 import { config as envConfig } from 'dotenv';
 import { createConnection, Connection } from 'mysql2/promise';
 
-import productRouter from './routes/product';
 import productsRouter from './routes/products';
+import productRouter from './routes/product';
+import propertiesRouter from './routes/properties';
 import indexRouter from './routes/index';
 import authRouter from './routes/auth';
 import passportInit from './services/passport';
@@ -32,8 +33,9 @@ export default async function init() {
 
   app.use('/', indexRouter);
   app.use('/api/auth', authRouter);
-  app.use('/api/product', productRouter);
   app.use('/api/products', productsRouter);
+  app.use('/api/product', productRouter);
+  app.use('/api/properties', propertiesRouter);
 
   return app;
 };
