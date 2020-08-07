@@ -24,14 +24,14 @@ export default async function createProduct(productCode: string, token: string):
     };
     const req = supertest(server);
 
-    let res = await req.post('/api/product')
+    const res = await req.post('/api/product')
       .set('Authorization', 'Bearer '+token)
       .send(product);
 
     if (res.status !== 201) {
       throw new Error(`got failing status when creating ${productCode}: status: ${res.status}`);
     }
-    
+
     return product;
 
   } finally {

@@ -87,7 +87,7 @@ export default Vue.extend({
   methods: {
 
     async save() {
-      if (!this.valid) {
+      if (!this.formValid) {
         return;
       }
 

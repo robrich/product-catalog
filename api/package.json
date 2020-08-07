@@ -7,7 +7,7 @@
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "npm run build",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "test": "jest"
   },
   "dependencies": {

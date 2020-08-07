@@ -13,8 +13,7 @@
     "types": [
       "webpack-env",
       "vuetify",
-      "jest",
-      "cypress"
+      "jest"
     ],
     "typeRoots": [
       "./node_modules/@types",

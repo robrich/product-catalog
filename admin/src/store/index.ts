@@ -32,11 +32,11 @@ export default new Vuex.Store({
   },
   mutations: {
 
-    jwt: (state: StoreData, jwt: string | undefined) => {
+    jwt: (state: VuexData, jwt: string | undefined) => {
       state.jwt = jwt;
     },
 
-    email: (state: StoreData, email: string | undefined) => {
+    email: (state: VuexData, email: string | undefined) => {
       state.email = email;
     }
 
