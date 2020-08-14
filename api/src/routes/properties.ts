@@ -71,7 +71,8 @@ export async function updateProductProperty(req: Request, res: Response) {
 
   const [result] = await db.execute<OkPacket>('UPDATE catalog SET properties = JSON_SET_STRING(properties, ?, ?) WHERE productCode = ?', [name, value, productCode]);
 
-  if (result.changedRows < 1) {
+  // result.changedRows only shows if it changed, not if we found the row
+  if (result.affectedRows < 1) {
     return res.status(404).end();
   }
 

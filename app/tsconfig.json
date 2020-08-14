@@ -13,8 +13,12 @@
     "types": [
       "webpack-env",
       "vuetify",
-      "jest"
+      "jest",
+      "cypress"
     ],
+    // cypress types conflict with mocha and jest types:
+    // https://github.com/cypress-io/cypress/issues/1087#issuecomment-353370449
+    "skipLibCheck": true,
     "typeRoots": [
       "./node_modules/@types",
       "./node_modules/vuetify/types"

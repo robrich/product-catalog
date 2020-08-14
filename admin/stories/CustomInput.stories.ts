@@ -1,5 +1,5 @@
 import CustomInput from '../src/components/CustomInput.vue';
-import { withKnobs, number, text, boolean } from '@storybook/addon-knobs';
+import { withKnobs, text } from '@storybook/addon-knobs';
 
 export default {
   component: CustomInput,

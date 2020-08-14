@@ -4,7 +4,7 @@ import { Connection } from 'mysql2/promise';
 
 
 export function makeMockRequest(db: Connection, {params, query}: {params?: Params, query?: Params}): Request {
-  return {
+  const req = {
     params: params || {},
     query: query || {},
     app: {
@@ -12,5 +12,6 @@ export function makeMockRequest(db: Connection, {params, query}: {params?: Param
         db
       }
     }
-  } as Request;
+  } as unknown;
+  return req as Request;
 }

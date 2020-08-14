@@ -2,10 +2,5 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "../../."
-  },
-  "include": [
-    // cypress types conflict with mocha and jest types:
-    // https://github.com/cypress-io/cypress/issues/1087#issuecomment-352839922
-    "../node_modules/cypress/types",
-  ]
+  }
 }

@@ -1,8 +1,21 @@
 import axios, { Method } from 'axios';
+import store from '../store';
+import { Headers } from '../types/fetcher';
 
 export default async function fetcher<TResult>(method: Method, url: string, data?: unknown): Promise<Response<TResult>> {
 
+  const jwt: string | undefined = store.state.jwt;
+
+  const headers: Headers = {
+    'Content-Type': 'application/json; charset=utf-8'
+  };
+
+  if (jwt) {
+    headers.Authorization = 'Bearer ' + jwt;
+  }
+
   const res = await axios({
+    headers,
     method,
     url,
     data,

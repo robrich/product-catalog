@@ -72,7 +72,8 @@ export async function updateProductById(req: Request, res: Response) {
 
   const [result] = await db.execute<OkPacket>('UPDATE catalog SET productCode = ?, name = ?, description = ?, properties = ?, active = ? WHERE id = ?', [product.productCode, product.name, product.description || null, JSON.stringify(product.properties), product.active, id]);
 
-  if (result.changedRows === 0) {
+  // result.changedRows only shows if we actually saved something
+  if (result.affectedRows === 0) {
     return res.status(404).end();
   }
 

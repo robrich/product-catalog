@@ -3,7 +3,7 @@ export interface Product {
   productCode: string;
   name: string;
   description: string | undefined;
-  properties: object;
+  properties: Record<string, string>;
   active: boolean;
 }
 

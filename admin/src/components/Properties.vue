@@ -1,5 +1,5 @@
 <template>
-  <v-card data-cy="c-properites">
+  <v-card data-cy="c-properties">
     <v-container>
       <v-row>
         <v-col cols="12">
@@ -52,7 +52,7 @@ export type NameValue = {
 
 export type PropertiesData = {
   entries: NameValue[];
-};
+}
 
 export default Vue.extend({
 
@@ -78,18 +78,19 @@ export default Vue.extend({
   },
 
   watch: {
-    
+
     value: {
-      handler(newVal: Record<string, any>) {
+      handler(newVal: Record<string, string>) {
         this.computeEntries(newVal);
-      }
+      },
+      deep: true
     }
 
   },
 
   methods: {
 
-    computeEntries(val: Record<string, any>) {
+    computeEntries(val: Record<string, string>) {
       this.entries = Object.entries(val || {}).map((e, i) => {
         const row: NameValue = {
           name: e[0],
@@ -108,7 +109,12 @@ export default Vue.extend({
     },
 
     computeValid() {
-      const invalidRows = this.entries.filter(row => this.required(row.name) && this.validCharacters(row.name));
+      const invalidRows = this.entries.filter(row => {
+        // returns true or string message, so compare to true
+        const required = this.required(row.name) === true;
+        const validChars = this.validCharacters(row.name) === true;
+        return !required || !validChars;
+      });
       return invalidRows.length === 0;
     },
 
@@ -125,7 +131,7 @@ export default Vue.extend({
         index: maxIndex + 1
       };
       this.entries.push(addRow);
-      // don't tell parent value changed
+      // don't tell parent value changed yet -- it would delete the row
       this.$emit('update:valid', false);
     },
 

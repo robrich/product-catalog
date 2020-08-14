@@ -10,7 +10,7 @@
           ref="form"
           v-model="formValid"
           lazy-validation
-          @submit="save"
+          @submit.prevent="save"
         >
           <v-text-field
             v-model="product.productCode"
@@ -35,7 +35,7 @@
             required
           ></v-text-field>
 
-          <p>// TODO: properties</p>
+          <Properties v-model="product.properties" :valid.sync="propertiesValid"></Properties>
 
           <v-checkbox
             v-model="product.active"
@@ -43,7 +43,7 @@
           ></v-checkbox>
 
           <v-btn
-            :disabled="!formValid"
+            :disabled="!formValid || !propertiesValid"
             color="primary"
             class="mr-4"
             type="submit"
@@ -59,11 +59,17 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Product } from '../types/product';
+import Properties from './Properties.vue';
 
 export default Vue.extend({
 
+  components: {
+    Properties
+  },
+
   data: () => ({
     formValid: true,
+    propertiesValid: true,
     productCodeRules: [
       (v: string) => !!v || 'Product Code is required',
       (v: string) => /[a-zA-Z0-9]+/.test(v) || 'Product Code must be only letters and numbers',
@@ -86,13 +92,11 @@ export default Vue.extend({
 
   methods: {
 
-    async save() {
-      if (!this.formValid) {
+    save() {
+      if (!this.formValid || !this.propertiesValid) {
         return;
       }
-
-      // TODO: save
-
+      this.$emit('save', this.product);
     }
 
   }

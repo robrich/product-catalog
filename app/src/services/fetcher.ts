@@ -1,6 +1,6 @@
 import axios, { Method } from 'axios';
 
-export default async function fetcher<TResult>(method: Method, url: string, data?: any): Promise<Response<TResult>> {
+export default async function fetcher<TResult>(method: Method, url: string, data?: unknown): Promise<Response<TResult>> {
 
   const res = await axios({
     method,
@@ -20,6 +20,6 @@ export default async function fetcher<TResult>(method: Method, url: string, data
 export interface Response<TResult> {
   ok: boolean;
   status: number;
-  headers: any;
+  headers: unknown;
   data: TResult | undefined;
 }

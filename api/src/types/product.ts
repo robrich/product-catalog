@@ -2,7 +2,7 @@ export interface Product {
   id: number;
   productCode: string;
   name: string;
-  description: string | undefined;
+  description: string | null;
   properties: object;
   active: boolean;
 }
