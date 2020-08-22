@@ -2,7 +2,8 @@ import expressRouter from 'express-promise-router';
 import { Request, Response } from 'express';
 import { Connection, RowDataPacket, OkPacket } from 'mysql2/promise';
 import { authenticate } from 'passport';
-import { Product, productCodeRegex } from '../types/product';
+import sanitizeHtml from 'sanitize-html';
+import { Product, productCodeRegex, productPropertyRegex } from '../types/product';
 
 const router = expressRouter();
 
@@ -12,6 +13,43 @@ router.put('/:id', authenticate('jwt', {session: false}), updateProductById);
 router.delete('/:id', authenticate('jwt', {session: false}), deleteProductById);
 
 // not for public consumption, exported for testing
+export function validateProduct(product: Product) : boolean {
+
+  if (!product.productCode || !productCodeRegex.test(product.productCode)) {
+    return false;
+  }
+  if (typeof product.active === 'undefined') {
+    product.active = true;
+  }
+  if (typeof product.properties === 'undefined') {
+    product.properties = {};
+  } else {
+    const invalidProps = Object.entries(product.properties).filter(([name, value]) => {
+      if (!name || !productPropertyRegex.test(name)) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    if (invalidProps.length > 0) {
+      return false;
+    }
+  }
+  product.subtitle = product.subtitle || null;
+  if (product.description) {
+    product.description = sanitizeHtml(product.description);
+  } else {
+    product.description = null;
+  }
+  if (typeof product.price !== 'number' || isNaN(product.price) || product.price < 0) {
+    return false;
+  }
+  product.image = product.image || null;
+
+  return true;
+}
+
+// not for public consumption, exported for testing
 export async function getProductByProductCode(req: Request, res: Response) {
   const productCode = req.params.productCode || '';
   if (!productCode) {
@@ -19,14 +57,17 @@ export async function getProductByProductCode(req: Request, res: Response) {
   }
   const db: Connection = req.app.locals.db;
 
-  const [rows/*, fields*/] = await db.execute<RowDataPacket[]>('SELECT id, productCode, name, description, properties, active FROM catalog WHERE productCode = ?', [productCode]);
+  const [rows/*, fields*/] = await db.execute<RowDataPacket[]>('SELECT id, productCode, name, subtitle, price, image, description, properties, active FROM catalog WHERE productCode = ?', [productCode]);
   if (!rows || !rows.length) {
     return res.status(404).end();
   }
 
-  rows[0].active = !!rows[0].active;
+  const product: Product = rows[0] as Product;
 
-  res.json(rows[0]);
+  product.active = !!product.active;
+  product.price = +product.price;
+
+  res.json(product);
 }
 
 // not for public consumption, exported for testing
@@ -35,17 +76,14 @@ export async function createProduct(req: Request, res: Response) {
   if (!product || !product.productCode || !product.name || !productCodeRegex.test(product.productCode)) {
     return res.status(400).end();
   }
-  // TODO: better validate the product
-  if (typeof product.active === 'undefined') {
-    product.active = true;
-  }
-  if (typeof product.properties === 'undefined') {
-    product.properties = {};
+  const valid = validateProduct(product);
+  if (!valid) {
+    return res.status(400).end();
   }
 
   const db: Connection = req.app.locals.db;
 
-  const [result] = await db.execute<OkPacket>('INSERT INTO catalog (productCode, name, description, properties, active) VALUES (?,?,?,?,?)', [product.productCode, product.name, product.description || null, JSON.stringify(product.properties), product.active]);
+  const [result] = await db.execute<OkPacket>('INSERT INTO catalog (productCode, name, subtitle, price, image, description, properties, active) VALUES (?,?,?,?,?,?,?,?)', [product.productCode, product.name, product.subtitle, product.price, product.image, product.description, JSON.stringify(product.properties), product.active]);
 
   const id = result.insertId;
 
@@ -60,17 +98,15 @@ export async function updateProductById(req: Request, res: Response) {
   if (id < 1 || isNaN(id) || !product || !product.productCode || !product.name || !productCodeRegex.test(product.productCode)) {
     return res.status(400).end();
   }
-  // TODO: better validate the product
-  if (typeof product.active === 'undefined') {
-    product.active = true;
-  }
-  if (typeof product.properties === 'undefined') {
-    product.properties = {};
+  product.id = id;
+  const valid = validateProduct(product);
+  if (!valid) {
+    return res.status(400).end();
   }
 
   const db: Connection = req.app.locals.db;
 
-  const [result] = await db.execute<OkPacket>('UPDATE catalog SET productCode = ?, name = ?, description = ?, properties = ?, active = ? WHERE id = ?', [product.productCode, product.name, product.description || null, JSON.stringify(product.properties), product.active, id]);
+  const [result] = await db.execute<OkPacket>('UPDATE catalog SET productCode = ?, name = ?, subtitle = ?, price = ?, image = ?, description = ?, properties = ?, active = ? WHERE id = ?', [product.productCode, product.name, product.subtitle, product.price, product.image, product.description, JSON.stringify(product.properties), product.active, id]);
 
   // result.changedRows only shows if we actually saved something
   if (result.affectedRows === 0) {

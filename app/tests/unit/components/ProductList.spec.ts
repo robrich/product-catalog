@@ -15,7 +15,10 @@ describe('components/ProductList.vue', () => {
         // satisfy interface, not related to test:
         id: 1,
         active: true,
-        description: 'test',
+        subtitle: 'test',
+        price: 12.34,
+        image: 'https://placekitten.com/100/100',
+        description: '<p>test</p>',
         productCode: 'test-code-1',
         properties: {any:'values'}
       },
@@ -24,7 +27,10 @@ describe('components/ProductList.vue', () => {
         // satisfy interface, not related to test:
         id: 2,
         active: true,
-        description: 'test',
+        subtitle: 'test',
+        price: 12.34,
+        image: 'https://placekitten.com/100/100',
+        description: '<p>test</p>',
         productCode: 'test-code-2',
         properties: {any:'values'}
       }

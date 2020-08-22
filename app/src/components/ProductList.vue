@@ -11,7 +11,7 @@
       <v-img
         class="white--text align-end"
         height="200px"
-        src="https://placekitten.com/400/201"
+        :src="product.image"
       >
         <v-card-title>{{product.name}}</v-card-title>
       </v-img>

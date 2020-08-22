@@ -4,7 +4,7 @@ import { Express } from 'express';
 import { v4 as guid } from 'uuid';
 import appInit from '../../../src/app';
 import { Product } from '../../../src/types/product';
-import createProduct from '../fixtures/create-product';
+import { saveFakeProduct } from '../fixtures/product-create';
 import getAuthToken from '../fixtures/auth-token';
 
 
@@ -17,7 +17,7 @@ describe('routes/properties:e2e', () => {
 
   beforeAll(async () => {
     token = await getAuthToken();
-    product = await createProduct(productCode, token);
+    product = await saveFakeProduct(productCode, token);
   });
 
   beforeEach(async () => {

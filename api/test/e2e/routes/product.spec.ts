@@ -6,6 +6,7 @@ import appInit from '../../../src/app';
 import { Product } from '../../../src/types/product';
 import getProducts from '../fixtures/product-list';
 import getAuthToken from '../fixtures/auth-token';
+import { fakeProduct } from '../fixtures/product-create';
 
 
 describe('routes/product:e2e', () => {
@@ -52,16 +53,8 @@ describe('routes/product:e2e', () => {
   it('should create a product', async () => {
 
     // arrange
-    const expected: Product = {
-      id: 0,
-      productCode: 'test-'+guid(),
-      name: 'test product '+guid(),
-      description: 'this product was created by a test',
-      active: true,
-      properties: {
-        has: 'json'
-      }
-    };
+    const productCode = 'test-'+guid();
+    const expected: Product = fakeProduct(productCode);
     const req = supertest(server);
 
     // act

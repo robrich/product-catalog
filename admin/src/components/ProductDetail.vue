@@ -28,12 +28,32 @@
           ></v-text-field>
 
           <v-text-field
-            v-model="product.description"
+            v-model="product.subtitle"
             :counter="512"
-            :rules="descriptionRules"
-            label="Description"
-            required
+            :rules="subtitleRules"
+            label="Subtitle"
           ></v-text-field>
+
+          <v-text-field
+            v-model="product.price"
+            :rules="priceRules"
+            label="Price"
+            type="number"
+          ></v-text-field>
+
+          <v-text-field
+            v-model="product.image"
+            :rules="imageRules"
+            label="Product Image"
+          >
+            <template v-slot:append-outer>
+              <v-card>
+                <img :src="product.image" class="product-image" />
+              </v-card>
+            </template>
+          </v-text-field>
+
+          <quill-editor v-model="product.description" />
 
           <Properties v-model="product.properties" :valid.sync="propertiesValid"></Properties>
 
@@ -58,13 +78,18 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
+import { quillEditor } from 'vue-quill-editor';
 import { Product } from '../types/product';
 import Properties from './Properties.vue';
 
 export default Vue.extend({
 
   components: {
-    Properties
+    Properties,
+    quillEditor
   },
 
   data: () => ({
@@ -78,8 +103,17 @@ export default Vue.extend({
       (v: string) => !!v || 'Name is required',
       (v: string) => (v && v.length <= 100) || 'Name must be 100 characters or less'
     ],
-    descriptionRules: [
-      (v: string) => (v && v.length <= 512) || 'Description must be 512 characters or less'
+    subtitleRules: [
+      (v: string) => (v && v.length <= 512) || 'Subtitle must be 512 characters or less'
+    ],
+    priceRules: [
+      (v: string) => !!v || 'Price is required',
+      (v: string) => (v && !isNaN(parseFloat(v))) || 'Price must be a number',
+      (v: string) => (v && +v >= 0) || 'Price must be positive'
+    ],
+    imageRules: [
+      (v: string) => (v && v.indexOf('https://') === 0) || 'Image must be a url',
+      (v: string) => (v && v.length <= 512) || 'Image must be 512 characters or less'
     ]
   }),
 
@@ -105,4 +139,8 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.product-image {
+  max-height: 45px;
+  display: block;
+}
 </style>
