@@ -21,7 +21,19 @@ Developer Setup
 
 4. `docker-compose up` starts the database.
 
-5. Get to MemSQL Tools, the browser-based query and administration tool at http://localhost:8080/  For the cluster-in-a-box container, username is `root` and password is blank. 
+5. Browse to MemSQL Tools, the browser-based query and administration tool at http://localhost:8080/  For the cluster-in-a-box container, username is `root` and password is blank.
+
+The `sql` project contains database migration content, but can't create the database.
+
+6. Switch to the SQL Editor tab. Copy/paste the content from `sql/create-database.sql` and run it to create the database.
+
+7. `cd sql`
+   
+8. `npm install`
+
+9. Copy `database-sample.json` to `database.json` and modify the connection details in this file.
+
+10. `npm run db-up` to migrate the database and build all the schema.
 
 
 ### Setup Node API

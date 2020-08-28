@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "driver": "mysql",
+    "host": "localhost",
+    "database": "acme",
+    "user": "YOUR_USERNAME_HERE",
+    "password": "YOUR_PASSWORD_HERE",
+    "multipleStatements": true
+  },
+  "sql-file" : true
+}

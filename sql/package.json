@@ -1,0 +1,15 @@
+{
+  "name": "sql-migrations",
+  "license": "MIT",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "db-up": "db-migrate up all",
+    "db-reset": "db-migrate reset",
+    "db-create-change": "db-migrate create"
+  },
+  "devDependencies": {
+    "db-migrate": "^0.11.11",
+    "db-migrate-mysql": "^2.1.1"
+  }
+}
