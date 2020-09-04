@@ -5,8 +5,9 @@
   "private": true,
   "scripts": {
     "db-up": "db-migrate up all",
+    "db-down": "db-migrate down",
     "db-reset": "db-migrate reset",
-    "db-create-change": "db-migrate create"
+    "db-migrate-create": "db-migrate create"
   },
   "devDependencies": {
     "db-migrate": "^0.11.11",
