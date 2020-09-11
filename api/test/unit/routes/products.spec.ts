@@ -21,8 +21,8 @@ describe('routes/products', () => {
 
     // mocks
     const db = makeMockDb<Product[]>(products);
-    const req = makeMockRequest(db, {params: {page: `${page}`}});
-    const res = makeMockResponse<Product[]>();
+    const req = makeMockRequest({params: {page: `${page}`}});
+    const res = makeMockResponse<Product[]>(db);
 
     // act
     await getProductsByPage(req, res);
@@ -42,8 +42,8 @@ describe('routes/products', () => {
 
     // mocks
     const db = makeMockDb<undefined>(undefined); // empty
-    const req = makeMockRequest(db, {params: {page: `${page}`}});
-    const res = makeMockResponse<Product[]>();
+    const req = makeMockRequest({params: {page: `${page}`}});
+    const res = makeMockResponse<Product[]>(db);
 
     // act
     await getProductsByPage(req, res);
@@ -62,8 +62,8 @@ describe('routes/products', () => {
 
     // mocks
     const db = makeMockDb<Product[]>([]);
-    const req = makeMockRequest(db, {params: {}}); // no page parameter
-    const res = makeMockResponse<Product[]>();
+    const req = makeMockRequest({params: {}}); // no page parameter
+    const res = makeMockResponse<Product[]>(db);
 
     // act
     await getProductsByPage(req, res);
@@ -81,8 +81,8 @@ describe('routes/products', () => {
 
     // mocks
     const db = makeMockDb<Product[]>([]);
-    const req = makeMockRequest(db, {query: {}}); // no active parameter
-    const res = makeMockResponse<Product[]>();
+    const req = makeMockRequest({query: {}}); // no active parameter
+    const res = makeMockResponse<Product[]>(db);
 
     // act
     await getProductsByPage(req, res);

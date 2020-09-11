@@ -3,13 +3,16 @@ import { Request, Response } from 'express';
 import { Connection, RowDataPacket, OkPacket } from 'mysql2/promise';
 import { authenticate } from 'passport';
 import { Product, productCodeRegex, productPropertyRegex } from '../types/product';
+import { dbAuthenticated } from '../middleware/db-connection';
+import inRole from '../middleware/in-role';
+import { UserRole } from '../types/user';
 
 const router = expressRouter();
 
-router.get('/:productCode', authenticate('jwt', {session: false}), getProductProperties);
-router.post('/:productCode', authenticate('jwt', {session: false}), createProductProperty);
-router.put('/:productCode', authenticate('jwt', {session: false}), updateProductProperty);
-router.delete('/:productCode/:name', authenticate('jwt', {session: false}), deleteProductProperty);
+router.get('/:productCode', authenticate('jwt', {session: false}), inRole(UserRole.CatalogEditor), dbAuthenticated, getProductProperties);
+router.post('/:productCode', authenticate('jwt', {session: false}), inRole(UserRole.CatalogEditor), dbAuthenticated, createProductProperty);
+router.put('/:productCode', authenticate('jwt', {session: false}), inRole(UserRole.CatalogEditor), dbAuthenticated, updateProductProperty);
+router.delete('/:productCode/:name', authenticate('jwt', {session: false}), inRole(UserRole.CatalogEditor), dbAuthenticated, deleteProductProperty);
 
 // not for public consumption, exported for testing
 export async function getProductProperties(req: Request, res: Response) {
@@ -17,7 +20,7 @@ export async function getProductProperties(req: Request, res: Response) {
   if (!productCode || !productCodeRegex.test(productCode)) {
     return res.status(404).end();
   }
-  const db: Connection = req.app.locals.db;
+  const db: Connection = res.locals.db;
 
   const [rows/*, fields*/] = await db.execute<RowDataPacket[]>('SELECT properties FROM catalog WHERE productCode = ?', [productCode]);
   if (!rows || !rows.length) {
@@ -45,7 +48,7 @@ export async function createProductProperty(req: Request, res: Response) {
     return res.status(400).end();
   }
 
-  const db: Connection = req.app.locals.db;
+  const db: Connection = res.locals.db;
 
   const [result] = await db.execute<OkPacket>('UPDATE catalog SET properties = JSON_SET_STRING(properties, ?, ?) WHERE productCode = ?', [name, value, productCode]);
 
@@ -67,7 +70,7 @@ export async function updateProductProperty(req: Request, res: Response) {
     return res.status(400).end();
   }
 
-  const db: Connection = req.app.locals.db;
+  const db: Connection = res.locals.db;
 
   const [result] = await db.execute<OkPacket>('UPDATE catalog SET properties = JSON_SET_STRING(properties, ?, ?) WHERE productCode = ?', [name, value, productCode]);
 
@@ -90,7 +93,7 @@ export async function deleteProductProperty(req: Request, res: Response) {
     return res.status(400).end();
   }
 
-  const db: Connection = req.app.locals.db;
+  const db: Connection = res.locals.db;
 
   const [result] = await db.execute<OkPacket>('UPDATE catalog SET properties = JSON_DELETE_KEY(properties, ?) WHERE productCode = ?', [name, productCode]);
 

@@ -25,13 +25,6 @@ describe('routes/properties:e2e', () => {
     server = createServer(app);
   });
 
-  afterEach(async () => {
-    const db = app?.locals?.db;
-    if (db) {
-      await db.end();
-    }
-  });
-
   it('should get product properties by product code', async () => {
 
     // arrange

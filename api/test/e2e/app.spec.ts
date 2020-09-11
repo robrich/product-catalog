@@ -15,13 +15,6 @@ describe('app:e2e', () => {
     server = createServer(app);
   });
 
-  afterEach(async () => {
-    const db = app?.locals?.db;
-    if (db) {
-      await db.end();
-    }
-  });
-
   it('should get the product list page and the product detail for the first product', async () => {
 
     // test 1: product list

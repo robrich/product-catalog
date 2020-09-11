@@ -4,28 +4,22 @@ import { Express } from 'express';
 import appInit from '../../../src/app';
 
 
-export default async function getAuthToken(): Promise<string> {
+export default async function getAuthToken(username?: string | undefined, password?: string | undefined): Promise<string> {
 
   const app: Express = await appInit();
 
-  try {
-    const server: Server = createServer(app);
-    const req = supertest(server);
-    const email = 'some@user.com'; // TODO: config
-    const password = 'somepassword'; // TODO: config
-    const res = await req.post(`/api/auth/`)
-      .send({email, password});
-
-    if (!res.body.token) {
-      throw new Error(`failed to login with ${email} in test`);
-    }
-
-    return res.body.token;
-
-  } finally {
-    const db = app?.locals?.db;
-    if (db) {
-      await db.end();
-    }
+  const server: Server = createServer(app);
+  const req = supertest(server);
+  if (!username && !password) {
+    username = process.env.TEST_ADMIN_USERNAME;
+    password = process.env.TEST_ADMIN_PASSWORD;
   }
+  const res = await req.post(`/api/auth/`)
+    .send({username, password});
+
+  if (!res.body.token) {
+    throw new Error(`failed to login with ${username} in test`);
+  }
+
+  return res.body.token;
 }

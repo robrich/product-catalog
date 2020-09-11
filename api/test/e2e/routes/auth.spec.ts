@@ -1,8 +1,10 @@
-import supertest, { Test, Response } from 'supertest';
+import supertest, { Response } from 'supertest';
 import { createServer, Server } from 'http';
 import { Express } from 'express';
 import { v4 as guid } from 'uuid';
 import appInit from '../../../src/app';
+import { User, UserRole } from '../../../src/types/user';
+import getAuthToken from '../fixtures/auth-token';
 
 
 describe('routes/auth:e2e', () => {
@@ -12,13 +14,6 @@ describe('routes/auth:e2e', () => {
   beforeEach(async () => {
     app = await appInit();
     server = createServer(app);
-  });
-
-  afterEach(async () => {
-    const db = app?.locals?.db;
-    if (db) {
-      await db.end();
-    }
   });
 
   [
@@ -66,18 +61,66 @@ describe('routes/auth:e2e', () => {
     });
   });
 
+  [
+    {method: 'post', url: '/api/product'},
+    {method: 'put', url: '/api/product/-1'},
+    {method: 'delete', url: '/api/product/-1'},
+    {method: 'get', url: `/api/properties/not-found-${guid()}`},
+    {method: 'post', url: `/api/properties/not-found-${guid()}`},
+    {method: 'put', url: `/api/properties/not-found-${guid()}`},
+    {method: 'delete', url: `/api/properties/not-found-${guid()}/prop-${guid()}`},
+  ].forEach(({method, url}: {method: string, url: string}) => {
+    it(`should get 401 when underauthenticated ${method} to ${url}`, async () => {
+
+      // arrange
+      const status = 401
+      const username = process.env.TEST_READ_ONLY_USERNAME;
+      const password = process.env.TEST_READ_ONLY_PASSWORD;
+      const token = await getAuthToken(username, password);
+      const req = supertest(server);
+
+      // act
+      // not valid typescript: const res = await req[method](url);
+      let res: Response;
+      switch (method) {
+        case 'get':
+          res = await req.get(url)
+            .set('Authorization', 'Bearer '+token);
+          break;
+        case 'post':
+          res = await req.post(url)
+            .set('Authorization', 'Bearer '+token);
+          break;
+        case 'put':
+          res = await req.put(url)
+            .set('Authorization', 'Bearer '+token);
+          break;
+        case 'delete':
+          res = await req.delete(url)
+            .set('Authorization', 'Bearer '+token)
+          break;
+        default:
+          throw new Error(`don\'t know how to ${method}`);
+      }
+    
+      // assert
+      expect(res.status).toEqual(status);
+    });
+  
+  });
+
   it('should login and get user info', async () => {
 
     // test 1: login
 
     // arrange
     const req = supertest(server);
-    const email = 'some@user.com';
-    const password = 'somepassword';
+    const username = process.env.TEST_ADMIN_USERNAME;
+    const password = process.env.TEST_ADMIN_PASSWORD;
 
     // act
     let res = await req.post(`/api/auth/`)
-      .send({email, password});
+      .send({username, password});
 
     // assert
     expect(res.status).toEqual(200);
@@ -92,9 +135,13 @@ describe('routes/auth:e2e', () => {
     res = await req.get(`/api/auth/`)
       .set('Authorization', 'Bearer '+token);
 
+    const user = res.body as User | undefined;
+
     // assert
     expect(res.status).toEqual(200);
-    expect(res.body.email).toEqual(email);
+    expect(user?.username).toEqual(username);
+    expect(user?.secret).toBeUndefined();
+    expect(user?.roles?.sort()).toEqual([UserRole.CatalogEditor, UserRole.UserEditor].sort());
 
   });
 

@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import { authenticate } from 'passport';
 import SimpleCrypto from 'simple-crypto-js';
 import { dbLogin } from '../services/db-login';
+import { User, usernameRegex, UserRole, USER_EDITOR, CATALOG_EDITOR, CATALOG_READ_ONLY } from '../types/user';
+import { RowDataPacket } from 'mysql2/promise';
 
 const router = expressRouter();
 
@@ -13,18 +15,20 @@ router.post('/', login);
 
 // not for public consumption, exported for testing
 export async function getCurrentUser(req: Request, res: Response) {
-  if (req.user) {
-    // TODO: don't expose password
-    res.json(req.user);
-  } else {
-    res.status(401).end();
+  const user = req.user as User;
+  if (!user) {
+    return res.status(401).end();
   }
+  
+  const result = Object.assign({}, user);
+  delete result.secret;
+  res.json(result);
 }
 
 // not for public consumption, exported for testing
 export async function login(req: Request, res: Response) {
   const { username, password } = req.body;
-  if (!username || !password) {
+  if (!username || !password || !usernameRegex.test(username)) {
     return res.status(401).json({message: 'Invalid username / password'});
   }
 
@@ -40,11 +44,33 @@ export async function login(req: Request, res: Response) {
     return res.status(401).json({message: 'Invalid username / password'});
   }
 
+  const userAndHost = `'${username}'@'%'`;
+  const [rows/*, fields*/] = await db.execute<RowDataPacket[]>('select `user`, `group` from information_schema.users_groups where `user` = ?', [userAndHost]);
+
+  const roles: UserRole[] = [];
+  if (rows?.length) {
+    rows.forEach(r => {
+      if (r.group === USER_EDITOR) {
+        roles.push(UserRole.UserEditor);
+      } else if (r.group === CATALOG_EDITOR) {
+        roles.push(UserRole.CatalogEditor);
+      } else if (r.group === CATALOG_READ_ONLY) {
+        roles.push(UserRole.CatalogReadOnly);
+      } else {
+        // unknown role
+      }
+    });
+  }
+
+  // close db connection -- we're done with it
+  await db.end();
+
   const secret = simpleCrypto.encrypt(password);
 
-  const user = {
+  const user: User = {
     username,
-    secret
+    secret,
+    roles
   };
   const token = jwt.sign(user, jwtAuthKey, {expiresIn: '6h'});
   delete user.secret;

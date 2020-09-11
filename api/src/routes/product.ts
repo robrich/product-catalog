@@ -4,13 +4,16 @@ import { Connection, RowDataPacket, OkPacket } from 'mysql2/promise';
 import { authenticate } from 'passport';
 import sanitizeHtml from 'sanitize-html';
 import { Product, productCodeRegex, productPropertyRegex } from '../types/product';
+import { dbAnonymous, dbAuthenticated } from '../middleware/db-connection';
+import inRole from '../middleware/in-role';
+import { UserRole } from '../types/user';
 
 const router = expressRouter();
 
-router.get('/:productCode', getProductByProductCode);
-router.post('/', authenticate('jwt', {session: false}), createProduct);
-router.put('/:id', authenticate('jwt', {session: false}), updateProductById);
-router.delete('/:id', authenticate('jwt', {session: false}), deleteProductById);
+router.get('/:productCode', dbAnonymous, getProductByProductCode);
+router.post('/', authenticate('jwt', {session: false}), inRole(UserRole.CatalogEditor), dbAuthenticated, createProduct);
+router.put('/:id', authenticate('jwt', {session: false}), inRole(UserRole.CatalogEditor), dbAuthenticated, updateProductById);
+router.delete('/:id', authenticate('jwt', {session: false}), inRole(UserRole.CatalogEditor), dbAuthenticated, deleteProductById);
 
 // not for public consumption, exported for testing
 export function validateProduct(product: Product) : boolean {
@@ -55,7 +58,7 @@ export async function getProductByProductCode(req: Request, res: Response) {
   if (!productCode) {
     return res.status(404).end();
   }
-  const db: Connection = req.app.locals.db;
+  const db: Connection = res.locals.db;
 
   const [rows/*, fields*/] = await db.execute<RowDataPacket[]>('SELECT id, productCode, name, subtitle, price, image, description, properties, active FROM catalog WHERE productCode = ?', [productCode]);
   if (!rows || !rows.length) {
@@ -81,7 +84,7 @@ export async function createProduct(req: Request, res: Response) {
     return res.status(400).end();
   }
 
-  const db: Connection = req.app.locals.db;
+  const db: Connection = res.locals.db;
 
   const [result] = await db.execute<OkPacket>('INSERT INTO catalog (productCode, name, subtitle, price, image, description, properties, active) VALUES (?,?,?,?,?,?,?,?)', [product.productCode, product.name, product.subtitle, product.price, product.image, product.description, JSON.stringify(product.properties), product.active]);
 
@@ -104,7 +107,7 @@ export async function updateProductById(req: Request, res: Response) {
     return res.status(400).end();
   }
 
-  const db: Connection = req.app.locals.db;
+  const db: Connection = res.locals.db;
 
   const [result] = await db.execute<OkPacket>('UPDATE catalog SET productCode = ?, name = ?, subtitle = ?, price = ?, image = ?, description = ?, properties = ?, active = ? WHERE id = ?', [product.productCode, product.name, product.subtitle, product.price, product.image, product.description, JSON.stringify(product.properties), product.active, id]);
 
@@ -124,7 +127,7 @@ export async function deleteProductById(req: Request, res: Response) {
     return res.status(400).end();
   }
 
-  const db: Connection = req.app.locals.db;
+  const db: Connection = res.locals.db;
 
   if (force) {
     await db.execute<OkPacket>('DELETE FROM catalog WHERE id = ?', [id]);

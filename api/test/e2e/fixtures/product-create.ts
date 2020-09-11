@@ -26,26 +26,20 @@ export function fakeProduct(productCode: string): Product {
 export async function saveFakeProduct(productCode: string, token: string): Promise<Product> {
   const app: Express = await appInit();
 
-  try {
-    const server: Server = createServer(app);
+  const server: Server = createServer(app);
 
-    const product: Product = fakeProduct(productCode);
-    const req = supertest(server);
+  const product: Product = fakeProduct(productCode);
+  const req = supertest(server);
 
-    const res = await req.post('/api/product')
-      .set('Authorization', 'Bearer '+token)
-      .send(product);
+  const res = await req.post('/api/product')
+    .set('Authorization', 'Bearer '+token)
+    .send(product);
 
-    if (res.status !== 201) {
-      throw new Error(`got failing status when creating ${productCode}: status: ${res.status}, body: ${JSON.stringify(res.body, null, 2)}`);
-    }
-
-    return product;
-
-  } finally {
-    const db = app?.locals?.db;
-    if (db) {
-      await db.end();
-    }
+  if (res.status !== 201) {
+    throw new Error(`got failing status when creating ${productCode}: status: ${res.status}, body: ${JSON.stringify(res.body, null, 2)}`);
   }
+
+  product.id = res.body.id;
+
+  return product;
 }

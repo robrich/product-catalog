@@ -16,8 +16,8 @@ describe('routes/product', () => {
 
     // mocks
     const db = makeMockDb<Product[]>([product]);
-    const req = makeMockRequest(db, {params: {productCode}});
-    const res = makeMockResponse<Product>();
+    const req = makeMockRequest({params: {productCode}});
+    const res = makeMockResponse<Product>(db);
 
     // act
     await getProductByProductCode(req, res);
@@ -36,8 +36,8 @@ describe('routes/product', () => {
 
     // mocks
     const db = makeMockDb<Product[]>([]);
-    const req = makeMockRequest(db, {params: {productCode}});
-    const res = makeMockResponse<Product>();
+    const req = makeMockRequest({params: {productCode}});
+    const res = makeMockResponse<Product>(db);
 
     // act
     await getProductByProductCode(req, res);
@@ -55,8 +55,8 @@ describe('routes/product', () => {
 
     // mocks
     const db = makeMockDb<Product[]>([]);
-    const req = makeMockRequest(db, {}); // blank productCode
-    const res = makeMockResponse<Product>();
+    const req = makeMockRequest({}); // blank productCode
+    const res = makeMockResponse<Product>(db);
 
     // act
     await getProductByProductCode(req, res);

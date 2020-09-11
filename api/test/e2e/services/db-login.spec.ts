@@ -29,7 +29,7 @@ describe('services/db-login', () => {
     await doTest(username, password, expected);
 
   });
-  
+
   it('should return null on auth fail', async () => {
 
     // arrange
@@ -41,7 +41,19 @@ describe('services/db-login', () => {
     await doTest(username, password, expected);
 
   });
-  
+
+  it('should return null on auth fail', async () => {
+
+    // arrange
+    const username = 'username with invalid CHARACTERS!!!';
+    const password = process.env.TEST_ADMIN_PASSWORD;
+    const expected = false;
+
+    // act & assert
+    await doTest(username, password, expected);
+
+  });
+
   it('should return db on auth success', async () => {
 
     // arrange
@@ -55,7 +67,7 @@ describe('services/db-login', () => {
   });
 
   async function doTest(username: string | undefined, password: string | undefined, expected: boolean) {
-    
+
     // act
     const db = await dbLogin(username, password);
     if (db) {

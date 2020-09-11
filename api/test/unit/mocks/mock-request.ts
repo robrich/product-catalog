@@ -1,17 +1,13 @@
 import { Request } from 'express';
 import { Params } from 'express-serve-static-core';
-import { Connection } from 'mysql2/promise';
+import { User } from '../../../src/types/user';
 
 
-export function makeMockRequest(db: Connection, {params, query}: {params?: Params, query?: Params}): Request {
+export function makeMockRequest({params, query, user}: {params?: Params, query?: Params, user?: User | undefined}): Request {
   const req = {
     params: params || {},
     query: query || {},
-    app: {
-      locals: {
-        db
-      }
-    }
+    user
   } as unknown;
   return req as Request;
 }

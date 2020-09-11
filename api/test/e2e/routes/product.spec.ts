@@ -4,19 +4,16 @@ import { Express } from 'express';
 import { v4 as guid } from 'uuid';
 import appInit from '../../../src/app';
 import { Product } from '../../../src/types/product';
-import getProducts from '../fixtures/product-list';
+import { fakeProduct, saveFakeProduct } from '../fixtures/product-create';
 import getAuthToken from '../fixtures/auth-token';
-import { fakeProduct } from '../fixtures/product-create';
 
 
 describe('routes/product:e2e', () => {
   let app: Express;
   let server: Server;
-  let products: Product[];
   let token: string;
 
   beforeAll(async () => {
-    products = await getProducts();
     token = await getAuthToken();
   });
 
@@ -25,17 +22,11 @@ describe('routes/product:e2e', () => {
     server = createServer(app);
   });
 
-  afterEach(async () => {
-    const db = app?.locals?.db;
-    if (db) {
-      await db.end();
-    }
-  });
-
   it('should get product by product code', async () => {
 
     // arrange
-    const productCode = products[0].productCode;
+    const productCode = 'test-'+guid();
+    const expected = await saveFakeProduct(productCode, token);
     const req = supertest(server);
 
     // act
@@ -47,6 +38,7 @@ describe('routes/product:e2e', () => {
 
     expect(product?.productCode).toEqual(productCode);
     expect(product?.id).toBeGreaterThan(0);
+    expect(product?.id).toEqual(expected.id);
 
   });
 
@@ -67,9 +59,6 @@ describe('routes/product:e2e', () => {
     expected.id = res.body?.id;
     expect(expected.id).toBeGreaterThan(0);
 
-    // stash it for later
-    products.push(expected);
-
     // go get it and ensure it exists
     res = await req.get(`/api/product/${expected.productCode}`);
     expect(res.status).toEqual(200);
@@ -82,13 +71,10 @@ describe('routes/product:e2e', () => {
   it('should modify a product', async () => {
 
     // arrange
-    const product = products.filter(p => /^test\-/.test(p.productCode))[0];
-    expect(product).toBeTruthy(); // fail here? re-run tests to create product
-    const productId = product.id;
-    const productCode = product.productCode;
-    products = products.filter(p => p.id !== productId);
+    const productCode = 'test-'+guid();
+    const expected = await saveFakeProduct(productCode, token);
+    const productId = expected.id;
 
-    const expected = Object.assign({}, product);
     expected.name = 'changed test product '+guid();
     expected.properties = {
       mod: 'ified'
@@ -117,11 +103,9 @@ describe('routes/product:e2e', () => {
   it('should delete a product', async () => {
 
     // arrange
-    const product = products.filter(p => /^test\-/.test(p.productCode))[0];
-    expect(product).toBeTruthy(); // fail here? re-run tests to create product
-    const productId = product.id;
-    const productCode = product.productCode;
-    products = products.filter(p => p.id !== productId);
+    const productCode = 'test-'+guid();
+    const expected = await saveFakeProduct(productCode, token);
+    const productId = expected.id;
     const req = supertest(server);
 
     // act

@@ -20,7 +20,7 @@ export async function dbLogin(username: string | undefined, password: string | u
     return db;
   } catch (err) {
     if (err.code === 'ER_ACCESS_DENIED_ERROR') {
-      console.log(`login fail for username ${username}`, err, {err});
+      console.log(`login fail for username ${username}: ${err}`);
       return null;
     }
     throw err;
