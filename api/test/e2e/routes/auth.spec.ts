@@ -102,11 +102,11 @@ describe('routes/auth:e2e', () => {
         default:
           throw new Error(`don\'t know how to ${method}`);
       }
-    
+
       // assert
       expect(res.status).toEqual(status);
     });
-  
+
   });
 
   it('should login and get user info', async () => {

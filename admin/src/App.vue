@@ -34,6 +34,14 @@
       </v-btn>
 
       <v-btn
+        v-if="isUserEditor"
+        to="/users"
+        text
+      >
+        Users
+      </v-btn>
+
+      <v-btn
         v-if="isAuthenticated"
         to="/about"
         text
@@ -77,7 +85,10 @@ export default Vue.extend({
   }),
 
   computed: {
-    ...mapGetters(['isAuthenticated'])
+    ...mapGetters([
+      'isAuthenticated',
+      'isUserEditor'
+    ])
   }
 
 });

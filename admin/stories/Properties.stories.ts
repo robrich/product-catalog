@@ -7,6 +7,7 @@ export default {
   decorators: [ withKnobs ]
 };
 
+
 export const configured = () => ({
   components: { Properties },
   template: '<div><Properties v-model="model" :valid.sync="valid"></Properties><br />valid: {{valid}} model: {{model}}</div>',

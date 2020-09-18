@@ -35,7 +35,7 @@ describe('middleware/in-role', () => {
   });
 
   it('should return next on role match', () => {
-    
+
     // arrange
     const expectedStatus = undefined;
     const expectedCalledNext = true;
@@ -58,7 +58,7 @@ describe('middleware/in-role', () => {
     // act
     let calledNext = false;
     const inRoleMiddleware = inRole(requiredRole);
-    inRoleMiddleware(req, res, function () {
+    inRoleMiddleware(req, res, () => {
       calledNext = true;
     });
 

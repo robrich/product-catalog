@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router';
 import Home from '../views/Home.vue';
 import Logout from '../views/Logout.vue';
 import store from '../store';
+import { UserRole } from '../types/user';
 
 Vue.use(VueRouter);
 
@@ -40,6 +41,14 @@ const routes: RouteConfig[] = [
     path: '/product/:id',
     name: 'ProductDetail',
     component: () => import(/* webpackChunkName: "product" */ '../views/ProductDetail.vue')
+  },
+  {
+    path: '/users',
+    name: 'UserList',
+    component: () => import(/* webpackChunkName: "users" */ '../views/UserList.vue'),
+    meta: {
+      role: UserRole.UserEditor
+    }
   }
 ];
 
@@ -56,8 +65,16 @@ router.beforeEach((to, from, next) => {
 
   const isAuthenticated = store.getters.isAuthenticated;
   if (!isAuthenticated) {
-    console.log('401: not authorized to page');
+    console.log(`401: not authorized to ${to.fullPath}`);
     return next('/');
+  }
+
+  if (to.meta?.role) {
+    const inRole = !!store.state.roles.find(r => r === to.meta.role);
+    if (!inRole) {
+      console.log(`401: not authorized enough to ${to.fullPath}`);
+      return next('/');
+    }
   }
 
   next();

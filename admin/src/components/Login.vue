@@ -1,6 +1,14 @@
 <template>
   <div id="c-login">
-    <v-card id="login-card">
+    <v-card
+      class="mx-auto"
+      outlined
+      id="login-card"
+    >
+      <v-img
+        src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+        height="200px"
+      ></v-img>
       <v-card-title>
         <h1>Login</h1>
       </v-card-title>
@@ -12,9 +20,9 @@
           @submit.prevent="submit"
         >
           <v-text-field
-            v-model="email"
-            :rules="emailRules"
-            label="Email"
+            v-model="username"
+            :rules="usernameRules"
+            label="Username"
             required
           ></v-text-field>
 
@@ -38,7 +46,7 @@
         </v-form>
 
         <v-alert v-if="loginFail" type="error">
-          Invalid email / password
+          Invalid username / password
         </v-alert>
       </v-card-text>
     </v-card>
@@ -47,18 +55,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import fetcher from '@/services/fetcher';
+import fetcher from '../services/fetcher';
 import store from '../store';
+import { User, usernameRegex } from '../types/user';
 
 export type LoginResponse = {
   token: string | undefined;
   user: User | undefined;
 };
-
-export type User = {
-  id: number;
-  email: string;
-}
 
 export default Vue.extend({
 
@@ -72,10 +76,10 @@ export default Vue.extend({
       (v: string) => !!v || 'Password is required',
       (v: string) => (v && v.length >= 5) || 'Password must be more than 5 characters',
     ],
-    email: '',
-    emailRules: [
-      (v: string) => !!v || 'Email is required',
-      (v: string) => /.+@.+\..+/.test(v) || 'Email must be valid',
+    username: '',
+    usernameRules: [
+      (v: string) => !!v || 'Username is required',
+      (v: string) => usernameRegex.test(v) || 'Username must be valid',
     ]
   }),
 
@@ -88,17 +92,18 @@ export default Vue.extend({
   },
 
   methods: {
+
     async submit() {
       this.form.validate();
       if (!this.valid) {
         return;
       }
 
-      const email = this.email;
+      const username = this.username;
 
       this.loading = true;
       const res = await fetcher<LoginResponse>('POST', '/api/auth', {
-        email,
+        username,
         password: this.password
       });
       this.loading = false;
@@ -109,8 +114,9 @@ export default Vue.extend({
       }
 
       const jwt = res.data.token;
+      const roles = res.data.user?.roles;
 
-      await store.dispatch('login', {email, jwt});
+      await store.dispatch('login', {username, roles, jwt});
       await Vue.nextTick();
       this.$router.push('/products');
 

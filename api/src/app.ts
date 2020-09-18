@@ -3,12 +3,13 @@ import logger from 'morgan';
 import { join } from 'path';
 import { config as envConfig } from 'dotenv';
 
+import passportInit from './services/passport';
+import indexRouter from './routes/index';
+import authRouter from './routes/auth';
 import productsRouter from './routes/products';
 import productRouter from './routes/product';
 import propertiesRouter from './routes/properties';
-import indexRouter from './routes/index';
-import authRouter from './routes/auth';
-import passportInit from './services/passport';
+import usersRouter from './routes/users';
 
 export default async function init() {
   envConfig();
@@ -27,6 +28,7 @@ export default async function init() {
   app.use('/api/products', productsRouter);
   app.use('/api/product', productRouter);
   app.use('/api/properties', propertiesRouter);
+  app.use('/api/users', usersRouter);
 
   return app;
 };
