@@ -4,7 +4,7 @@ export type User = {
   roles: UserRole[];
 }
 
-export const usernameRegex = /^[a-z0-9]+$/;
+export const usernameRegex = /^[a-z0-9]{6,32}$/;
 
 export enum UserRole {
   UserEditor = 'user-editor',

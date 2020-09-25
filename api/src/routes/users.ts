@@ -21,8 +21,8 @@ export async function getUsersByPage(req: Request, res: Response) {
   }
   const db: Connection = res.locals.db;
 
-  const [userRows/*, fields*/] = await db.query<RowDataPacket[]>('select `user` from users where is_deleted = 0 limit ? offset ?', [PAGE_SIZE, (PAGE_SIZE * pageNum)]);
-  let [roleRows/*, fields*/] = await db.query<RowDataPacket[]>('select `user`, `group` from users_groups');
+  const [userRows/*, fields*/] = await db.query<RowDataPacket[]>('select `user` from information_schema.users where is_deleted = 0 limit ? offset ?', [PAGE_SIZE, (PAGE_SIZE * pageNum)]);
+  let [roleRows/*, fields*/] = await db.query<RowDataPacket[]>('select `user`, `group` from information_schema.users_groups');
   if (!roleRows) {
     roleRows = [];
   }

@@ -65,6 +65,7 @@
 import Vue from 'vue';
 import { UserModel } from '../types/user-model';
 
+
 export default Vue.extend({
 
   data: () => ({

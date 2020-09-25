@@ -5,7 +5,7 @@ import { authenticate } from 'passport';
 import SimpleCrypto from 'simple-crypto-js';
 import { RowDataPacket } from 'mysql2/promise';
 import { dbLogin } from '../services/db-login';
-import { User, usernameRegex, UserRole, USER_EDITOR, CATALOG_EDITOR, CATALOG_READ_ONLY } from '../types/user';
+import { User, usernameRegex, UserRole } from '../types/user';
 import { userRolesFromRows } from '../services/user-roles';
 
 const router = expressRouter();
@@ -48,10 +48,10 @@ export async function login(req: Request, res: Response) {
   const userAndHost = `'${username}'@'%'`;
   const [rows/*, fields*/] = await db.execute<RowDataPacket[]>('select `user`, `group` from information_schema.users_groups where `user` = ?', [userAndHost]);
 
-  const roles: UserRole[] = userRolesFromRows(username, rows);
-
   // close db connection -- we're done with it
   await db.end();
+
+  const roles: UserRole[] = userRolesFromRows(username, rows);
 
   const secret = simpleCrypto.encrypt(password);
 

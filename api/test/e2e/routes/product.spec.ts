@@ -1,3 +1,4 @@
+import { config as envConfig } from 'dotenv';
 import supertest from 'supertest';
 import { createServer, Server } from 'http';
 import { Express } from 'express';
@@ -14,6 +15,7 @@ describe('routes/product:e2e', () => {
   let token: string;
 
   beforeAll(async () => {
+    envConfig(); // FRAGILE: can't unload environment variables
     token = await getAuthToken();
   });
 

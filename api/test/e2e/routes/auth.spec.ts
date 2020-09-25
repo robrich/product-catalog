@@ -1,3 +1,4 @@
+import { config as envConfig } from 'dotenv';
 import supertest, { Response } from 'supertest';
 import { createServer, Server } from 'http';
 import { Express } from 'express';
@@ -5,11 +6,16 @@ import { v4 as guid } from 'uuid';
 import appInit from '../../../src/app';
 import { User, UserRole } from '../../../src/types/user';
 import getAuthToken from '../fixtures/auth-token';
+import { fakeUsername } from '../fixtures/user-create';
 
 
 describe('routes/auth:e2e', () => {
   let app: Express;
   let server: Server;
+
+  beforeAll(() => {
+    envConfig(); // FRAGILE: can't unload environment variables
+  });
 
   beforeEach(async () => {
     app = await appInit();
@@ -29,6 +35,11 @@ describe('routes/auth:e2e', () => {
     {status: 401, method: 'post', url: `/api/properties/not-found-${guid()}`},
     {status: 401, method: 'put', url: `/api/properties/not-found-${guid()}`},
     {status: 401, method: 'delete', url: `/api/properties/not-found-${guid()}/prop-${guid()}`},
+    {status: 401, method: 'get', url: '/api/users/0'},
+    {status: 404, method: 'get', url: `/api/users/${fakeUsername()}`},
+    {status: 401, method: 'post', url: '/api/users'},
+    {status: 401, method: 'put', url: `/api/users/${fakeUsername()}`},
+    {status: 401, method: 'delete', url: `/api/users/${fakeUsername()}`}
   ].forEach(({status, method, url}: {status: number, method: string, url: string}) => {
     it(`should get ${status} when ${method} to ${url}`, async () => {
 
@@ -69,6 +80,11 @@ describe('routes/auth:e2e', () => {
     {method: 'post', url: `/api/properties/not-found-${guid()}`},
     {method: 'put', url: `/api/properties/not-found-${guid()}`},
     {method: 'delete', url: `/api/properties/not-found-${guid()}/prop-${guid()}`},
+    {method: 'get', url: '/api/users/0'},
+    {method: 'get', url: `/api/users/${fakeUsername()}`},
+    {method: 'post', url: '/api/users'},
+    {method: 'put', url: `/api/users/${fakeUsername()}`},
+    {method: 'delete', url: `/api/users/${fakeUsername()}`}
   ].forEach(({method, url}: {method: string, url: string}) => {
     it(`should get 401 when underauthenticated ${method} to ${url}`, async () => {
 

@@ -4,7 +4,9 @@ import { dbLogin } from '../../../src/services/db-login';
 
 describe('services/db-login', () => {
 
-  envConfig(); // FRAGILE: can't unload environment variables
+  beforeAll(() => {
+    envConfig(); // FRAGILE: can't unload environment variables
+  });
 
   it('should return null when no username passed', async () => {
 
