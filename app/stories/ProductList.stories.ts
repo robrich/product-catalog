@@ -1,3 +1,5 @@
+import { addDecorator } from '@storybook/vue';
+import StoryRouter from 'storybook-vue-router';
 import ProductList from '../src/components/ProductList.vue';
 import { withKnobs, number, text, boolean, object } from '@storybook/addon-knobs';
 import { Product } from '../src/types/product';
@@ -7,6 +9,8 @@ export default {
   title: 'components/ProductList',
   decorators: [ withKnobs ]
 };
+
+addDecorator(StoryRouter());
 
 const defaultProducts: Product[] = [
   {

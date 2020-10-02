@@ -2,7 +2,6 @@ import { withKnobs, object } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import StoryRouter from 'storybook-vue-router';
 import UserList from '../src/components/UserList.vue';
-import { User, UserRole } from '../src/types/user';
 import { UserModel } from '../src/types/user-model';
 
 
@@ -14,7 +13,8 @@ export default {
     StoryRouter()
   ],
   argTypes: {
-    onUserUpdated: { action: 'userUpdated' }
+    onUserUpdated: { action: 'userUpdated' },
+    onUserDeleted: { action: 'userDeleted' }
   }
 };
 
@@ -35,13 +35,14 @@ const sampleUserList: UserModel[] = [
 
 export const configured = () => ({
   components: { UserList },
-  template: '<UserList v-model="model" @userChanged="userChanged"></UserList>',
+  template: '<UserList v-model="model" @userChanged="userChanged" @userDeleted="userDeleted"></UserList>',
   props: {
     model: {
       default: object('model', sampleUserList)
     }
   },
   methods: {
-    userChanged: action('userChanged')
+    userChanged: action('userChanged'),
+    userDeleted: action('userDeleted')
   }
 });

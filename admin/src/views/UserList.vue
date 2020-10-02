@@ -1,9 +1,11 @@
 <template>
-  <div id="product-list">
-    <h1>Product list</h1>
+  <div id="user-list">
+    <v-container>
+      <h1>Users</h1>
+    </v-container>
     <Loading v-if="loading" />
     <div v-else>
-      <user-list v-model="users" v-if="users.length" @changeUser="saveUser" />
+      <user-list v-model="users" @userChanged="saveUser" @userDeleted="deleteUser" />
       <error v-if="errored" :status="status" />
     </div>
   </div>
@@ -70,12 +72,30 @@ export default Vue.extend({
 
       const user = userFromModel(userModel);
 
+      // there's no difference beteen add & update because there's no user.id
       const result: Response<User> = await fetcher<User>('POST', '/api/user', user);
+
+      delete user.secret;
+      delete userModel.secret;
 
       if (!result.ok) {
         // TODO: show error message
       }
 
+    },
+
+    async deleteUser(userModel: UserModel) {
+
+      const username = userModel.username;
+
+      const result: Response<User> = await fetcher<User>('DELETE', `/api/user/${username}`);
+
+      if (!result.ok) {
+        // TODO: show error message
+        return;
+      }
+
+      this.users = this.users.filter(u => u.username !== username);
     }
 
   }

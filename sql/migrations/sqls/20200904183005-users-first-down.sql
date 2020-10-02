@@ -1,2 +1,2 @@
-drop user 'website';
-drop user 'admin';
+drop user if exists 'website';
+drop user if exists 'admin';

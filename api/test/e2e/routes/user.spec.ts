@@ -33,7 +33,8 @@ describe('routes/user:e2e', () => {
     const req = supertest(server);
 
     // act
-    const res = await req.get(`/api/user/${username}`);
+    const res = await req.get(`/api/user/${username}`)
+      .set('Authorization', 'Bearer '+token);
 
     // assert
     expect(res.status).toEqual(200);
@@ -51,7 +52,6 @@ describe('routes/user:e2e', () => {
     const username = fakeUsername();
     const roles: UserRole[] = [];
     const expected: User = fakeUser(username, roles);
-    expected.secret = 'test-pass-'+guid();
     const req = supertest(server);
 
     // act
@@ -62,9 +62,12 @@ describe('routes/user:e2e', () => {
     // assert
     delete expected.secret;
     expect(res.status).toEqual(201);
+    const location = res.get('location');
+    expect(location).toEqual(`/api/user/${expected.username}`);
 
     // go get it and ensure it exists
-    res = await req.get(`/api/user/${expected.username}`);
+    res = await req.get(`/api/user/${expected.username}`)
+      .set('Authorization', 'Bearer '+token);
     expect(res.status).toEqual(200);
     const actual = res.body as User;
 
@@ -72,7 +75,7 @@ describe('routes/user:e2e', () => {
 
   });
 
-  it('should modify a user', async () => {
+  it('should modify a user roles', async () => {
 
     // arrange
     const username = fakeUsername();
@@ -91,7 +94,8 @@ describe('routes/user:e2e', () => {
     expect(res.status).toEqual(200);
 
     // go get it and ensure it changed
-    res = await req.get(`/api/user/${username}`);
+    res = await req.get(`/api/user/${username}`)
+      .set('Authorization', 'Bearer '+token);
     expect(res.status).toEqual(200);
     expect(res.body).toBeTruthy();
     const actual = res.body as User;
@@ -143,7 +147,8 @@ describe('routes/user:e2e', () => {
     expect(res.status).toEqual(200);
 
     // go get it and ensure it's gone
-    res = await req.get(`/api/user/${username}`);
+    res = await req.get(`/api/user/${username}`)
+      .set('Authorization', 'Bearer '+token);
     expect(res.status).toEqual(404);
 
   });

@@ -4,7 +4,7 @@ import { createServer, Server } from 'http';
 import { Express } from 'express';
 import appInit from '../../../src/app';
 import getAuthToken from '../fixtures/auth-token';
-import { User } from '../../../src/types/user';
+import { User, UserRole } from '../../../src/types/user';
 
 
 describe('routes/users:e2e', () => {
@@ -25,10 +25,11 @@ describe('routes/users:e2e', () => {
   it('should get the list of users', async () => {
 
     // arrange
+    const page = 0;
 
     // act
     const req = supertest(server);
-    const res = await req.get(`/api/users/0`)
+    const res = await req.get(`/api/users/${page}`)
       .set('Authorization', 'Bearer '+token);
 
     // assert
@@ -40,6 +41,7 @@ describe('routes/users:e2e', () => {
     expect(admin).toBeTruthy();
     expect(admin?.username).toBe(process.env.TEST_ADMIN_USERNAME);
     expect(admin?.secret).toBe(undefined);
+    expect(admin?.roles).toContain(UserRole.UserEditor);
 
   });
 

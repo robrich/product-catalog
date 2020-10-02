@@ -61,10 +61,9 @@ export async function getUser(req: Request, res: Response) {
 
 // not for public consumption, exported for testing
 export async function upsertUser(req: Request, res: Response) {
-  const username: string = req.params.username;
   const user: User = req.body;
-  if (username) {
-    user.username = username;
+  if (req.params.username) {
+    user.username = req.params.username;
   }
   const errors = validateUser(user);
   if (errors.length) {
@@ -74,11 +73,14 @@ export async function upsertUser(req: Request, res: Response) {
   const db: Connection = res.locals.db;
 
   // get the user
-  const userAndHost = `'${username}'@'%'`;
-  const [userRows/*, fields*/] = await db.query<RowDataPacket[]>('select `user` from information_schema.users where is_deleted = 0 and `user` = ?', [username]);
+  const userAndHost = `'${user.username}'@'%'`;
+  const [userRows/*, fields*/] = await db.query<RowDataPacket[]>('select `user` from information_schema.users where is_deleted = 0 and `user` = ?', [user.username]);
 
   if (!userRows?.length) {
     // create user
+    if (!user.secret) {
+      return res.status(400).json(['secret']);
+    }
     await db.query<OkPacket>('create user ? identified by ?', [user.username, user.secret]);
   } else if (user.secret) {
     // change password
@@ -115,7 +117,7 @@ export async function upsertUser(req: Request, res: Response) {
 export async function deleteUser(req: Request, res: Response) {
   const username: string = req.params.username;
   if (!username || !usernameRegex.test(username)) {
-    return res.status(400).end();
+    return res.status(400).json(['username']);
   }
 
   const db: Connection = res.locals.db;

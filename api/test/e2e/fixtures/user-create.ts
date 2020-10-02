@@ -7,14 +7,17 @@ import { User, UserRole } from '../../../src/types/user';
 
 
 export function fakeUsername() {
-  return 'test'+guid().replace(/\-/g, '');
+  // usernames are a-z, 0-9, {5-32}
+  const length = (Math.floor(Math.random()*22))+10;
+  const username = 'test'+guid().replace(/\-/g, '');
+  return username.substring(0, length);
 }
 
 export function fakeUser(username: string, roles: UserRole[]): User {
   const user: User = {
     username,
     roles,
-    secret: 'test-fixture-'+guid()
+    secret: 'test-fixture-'+guid() // ranomly generated password
   };
   return user;
 }
@@ -34,6 +37,8 @@ export async function saveFakeUser(username: string, roles: UserRole[], token: s
   if (res.status !== 201) {
     throw new Error(`got failing status when creating ${username}: status: ${res.status}, body: ${JSON.stringify(res.body, null, 2)}`);
   }
+
+  delete user.secret;
 
   return user;
 }
